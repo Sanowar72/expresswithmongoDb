@@ -1,4 +1,5 @@
 import express from "express";
+const app = express();
 import {
   Home,
   AddStudentData,
@@ -7,6 +8,8 @@ import {
   UpdateById,
   DeleteById,
 } from "../../controller/StudentController.js";
+
+
 const router = express.Router();
 
 router.route("/").get(Home).post(AddStudentData);

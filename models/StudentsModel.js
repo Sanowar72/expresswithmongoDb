@@ -13,7 +13,11 @@ const studentSchema = new mongoose.Schema({
     type: Number,
     unique: true,
   },
+  password: {
+    type: String,
+    required: [true, "please give password"],
+  },
 });
 
-const studentModel = mongoose.model("Mystudents", studentSchema);
+const studentModel = mongoose.model("Myfullstack", studentSchema);
 export default studentModel;
