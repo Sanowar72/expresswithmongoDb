@@ -93,7 +93,6 @@ const DeleteById = async (req, res) => {
   }
 };
 
-
 export {
   Home,
   AddStudentData,

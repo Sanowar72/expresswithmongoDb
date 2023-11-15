@@ -1,8 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
 import mongoose from "mongoose";
-const username = "atifreza72ar";
-const password = "Sonu72@r";
-const databaseName = "myExpressDb";
-const url = `mongodb+srv://${username}:${password}@cluster0.b1clnqa.mongodb.net/${databaseName}?retryWrites=true&w=majority`;
+
+const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_DATABASE } = process.env;
+
+const url = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.5polimg.mongodb.net/${MONGODB_DATABASE}?retryWrites=true&w=majority`;
 
 mongoose
   .connect(url, {

@@ -1,4 +1,6 @@
+import dotenv from "dotenv";
 import express from "express";
+dotenv.config();
 import router from "./routes/studentRoutes/StudentRoutes.js";
 import "./utils/DatabaseConnection.js";
 const app = express();
