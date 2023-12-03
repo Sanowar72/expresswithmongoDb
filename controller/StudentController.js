@@ -48,7 +48,74 @@ const ReadStudentData = async (req, res) => {
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "Error in getting the data",
+      message: "Error in getting data",
+    });
+  }
+};
+
+const searchByName = async (req, res) => {
+  try {
+    const { first_name, last_name } = req.body; // Extracting first name and last name from request body
+
+    const results = await Student.find({
+      $or: [
+        { first_name: { $regex: first_name, $options: "i" } },
+        { last_name: { $regex: last_name, $options: "i" } },
+      ],
+    }).select("-__v");
+
+    if (results.length > 0) {
+      return res.status(200).json({
+        success: true,
+        totalResults: results.length,
+        data: results,
+      });
+    }
+
+    res.status(404).json({ success: false, message: "No records found" });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error in searching data",
+    });
+  }
+};
+const filterStudents = async (req, res) => {
+  try {
+    let { domain, gender, availability } = req.body; // Extracting parameters from request body and converting to lowercase
+    const filterCriteria = {};
+
+    if (domain && gender) {
+      filterCriteria.domain = domain; // Adding domain filter
+      filterCriteria.gender = gender; // Adding gender filter
+    } else if (domain) {
+      filterCriteria.domain = domain; // Adding domain filter if provided
+    } else if (gender) {
+      filterCriteria.gender = gender; // Adding gender filter if provided
+    } else if (availability !== null) {
+      filterCriteria.available = availability; // Adding availability filter if provided
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "At least one filtering parameter is required",
+      });
+    }
+
+    const results = await Student.find(filterCriteria).select("-__v");
+
+    if (results.length > 0) {
+      return res.status(200).json({
+        success: true,
+        totalResults: results.length,
+        data: results,
+      });
+    }
+
+    res.status(404).json({ success: false, message: "No records found" });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error in filtering data",
     });
   }
 };
@@ -70,7 +137,7 @@ const GetStudentById = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: "Error in getting the data",
+      message: "Error in getting data based on id",
     });
   }
 };
@@ -127,6 +194,8 @@ export {
   Home,
   AddStudentData,
   ReadStudentData,
+  searchByName,
+  filterStudents,
   GetStudentById,
   UpdateById,
   DeleteById,

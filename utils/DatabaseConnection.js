@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_DATABASE } = process.env;
 
 const myurl = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.vbuzcmm.mongodb.net/${MONGODB_DATABASE}?retryWrites=true&w=majority`;
+
 mongoose
   .connect(myurl, {
     useNewUrlParser: true,
