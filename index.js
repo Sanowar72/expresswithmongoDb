@@ -9,9 +9,9 @@ import cors from "cors";
 
 const corsOptions = {
   origin: [
-    "http://localhost:4000",
+    "http://localhost:3000",
     "http://localhost:5173",
-    "http://localhost:4001",
+    "http://localhost:3001",
   ],
   methods: "GET, POST, PUT, DELETE",
   optionsSuccessStatus: 200,
@@ -19,9 +19,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.options("*", cors());
-const port = 3000;
+const port = 4000;
 
-app.use("/api/vi/student", router);
+app.use("/api/users", router);
 
 app.get("/", (req, res) => {
   res.send("Hello, Express!");

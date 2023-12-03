@@ -4,10 +4,9 @@ import mongoose from "mongoose";
 
 const { MONGODB_USERNAME, MONGODB_PASSWORD, MONGODB_DATABASE } = process.env;
 
-const url = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.5polimg.mongodb.net/${MONGODB_DATABASE}?retryWrites=true&w=majority`;
-
+const myurl = `mongodb+srv://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@cluster0.vbuzcmm.mongodb.net/${MONGODB_DATABASE}?retryWrites=true&w=majority`;
 mongoose
-  .connect(url, {
+  .connect(myurl, {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,

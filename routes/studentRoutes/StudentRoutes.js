@@ -9,11 +9,9 @@ import {
   DeleteById,
 } from "../../controller/StudentController.js";
 
-
 const router = express.Router();
 
-router.route("/").get(Home).post(AddStudentData);
-router.get("/allstudent", ReadStudentData);
+router.route("/").get(ReadStudentData).post(AddStudentData);
 router.route("/:id").get(GetStudentById).put(UpdateById).delete(DeleteById);
 
 export default router;

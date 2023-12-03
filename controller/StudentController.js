@@ -15,8 +15,7 @@ const AddStudentData = async (req, res) => {
   } catch (err) {
     res.status(400).json({
       success: false,
-      message:
-        "Please check rollNo this roll no may belongs to another student",
+      message: "Please check id",
       err,
     });
   }
@@ -24,71 +23,102 @@ const AddStudentData = async (req, res) => {
 
 const ReadStudentData = async (req, res) => {
   try {
-    const result = await Student.find().select("-__v");
+    const page = req.query.page || 1; // Default page is 1 if not provided
+    const limit = 20; // Number of records per page
+
+    const totalData = await Student.countDocuments(); // Get the total count of documents
+    const totalPages = Math.ceil(totalData / limit); // Calculate the total pages
+
+    let currentPage = parseInt(page);
+    if (currentPage > totalPages) {
+      currentPage = totalPages; // Set current page to the last page if requested page is greater
+    }
+
+    const skip = (currentPage - 1) * limit; // Calculate the number of records to skip
+
+    const result = await Student.find().select("-__v").skip(skip).limit(limit);
+
     res.status(200).json({
       success: true,
-      totalData: result.length,
+      currentPage: currentPage,
+      totalPages: totalPages,
+      totalData: totalData,
       data: result,
     });
   } catch (err) {
     res.status(500).json({
       success: false,
-      message: "error in getting the data",
+      message: "Error in getting the data",
     });
   }
 };
 
 const GetStudentById = async (req, res) => {
   try {
-    let result = await Student.findById(req.params.id).select("-__v");
+    const customId = req.params.id; // Extracting the custom id from route parameter
+
+    let result = await Student.findOne({ id: customId }).select("-__v"); // Modify the query to find by your custom 'id'
+
     if (result) {
       return res.status(200).json({
         success: true,
         data: result,
       });
     }
-    res.status(404).json({ success: false, message: "no record found" });
+
+    res.status(404).json({ success: false, message: "No record found" });
   } catch (err) {
     res.status(400).json({
       success: false,
-      message: "error in getting the data",
+      message: "Error in getting the data",
     });
   }
 };
+
 const UpdateById = async (req, res) => {
   try {
-    const result = await Student.findByIdAndUpdate(req.params.id, req.body, {
+    const customId = parseInt(req.params.id); // Extracting the custom id from route parameters
+
+    const result = await Student.findOneAndUpdate({ id: customId }, req.body, {
       new: true,
       runValidators: true,
     }).select("-__v");
+
     if (result) {
       return res.status(200).json({
         success: true,
         data: result,
       });
     }
-    res.status(404).json({ success: false, message: "no record found" });
+
+    res.status(404).json({ success: false, message: "No record found" });
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: "error in getting the data",
+      message: "Error in updating the data",
     });
   }
 };
+
 const DeleteById = async (req, res) => {
   try {
-    const result = await Student.findByIdAndDelete(req.params.id);
+    const customId = parseInt(req.params.id); // Extracting the custom id from route parameters
+
+    const result = await Student.findOneAndDelete({ id: customId });
+
     if (result) {
       return res.status(204).json({
         success: true,
-        message: "successfully deleted",
+        message: "Successfully deleted",
       });
     }
-    res.status(403).json({ success: false, message: "no record found" });
+
+    res.status(404).json({ success: false, message: "No record found" });
   } catch (error) {
-    res.status(400).json({
+    console.error(error);
+    res.status(500).json({
       success: false,
-      message: "error in getting the data",
+      message: "Error in deleting the data",
     });
   }
 };
