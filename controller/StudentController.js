@@ -57,12 +57,28 @@ const searchByName = async (req, res) => {
   try {
     const { first_name, last_name } = req.body; // Extracting first name and last name from request body
 
-    const results = await Student.find({
-      $or: [
-        { first_name: { $regex: new RegExp(`^${first_name}`, "i") } },
-        { last_name: { $regex: new RegExp(`^${last_name}`, "i") } },
-      ],
-    }).select("-__v");
+    let query = {};
+
+    if (first_name && last_name) {
+      query = {
+        $or: [
+          { first_name: { $regex: new RegExp(`^${first_name}`, "i") } },
+          { last_name: { $regex: new RegExp(`^${last_name}`, "i") } },
+        ],
+      };
+    } else if (first_name) {
+      query = { first_name: { $regex: new RegExp(`^${first_name}`, "i") } };
+    } else if (last_name) {
+      query = { last_name: { $regex: new RegExp(`^${last_name}`, "i") } };
+    } else {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Please provide at least one field (first_name or last_name) to search.",
+      });
+    }
+
+    const results = await Student.find(query).select("-__v");
 
     if (results.length > 0) {
       return res.status(200).json({
