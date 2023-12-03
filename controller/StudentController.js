@@ -59,8 +59,8 @@ const searchByName = async (req, res) => {
 
     const results = await Student.find({
       $or: [
-        { first_name: { $regex: first_name, $options: "i" } },
-        { last_name: { $regex: last_name, $options: "i" } },
+        { first_name: { $regex: new RegExp(`^${first_name}`, "i") } },
+        { last_name: { $regex: new RegExp(`^${last_name}`, "i") } },
       ],
     }).select("-__v");
 
@@ -80,6 +80,7 @@ const searchByName = async (req, res) => {
     });
   }
 };
+
 const filterStudents = async (req, res) => {
   try {
     let { domain, gender, availability } = req.body; // Extracting parameters from request body and converting to lowercase
@@ -162,7 +163,7 @@ const UpdateById = async (req, res) => {
   } catch (error) {
     res.status(400).json({
       success: false,
-      message: "Error in updating the data",
+      message: `Error in updating the data ${error}`,
     });
   }
 };
